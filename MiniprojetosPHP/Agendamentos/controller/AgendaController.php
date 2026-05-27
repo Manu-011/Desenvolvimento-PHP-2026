@@ -1,6 +1,7 @@
 <? php 
 //controller/AgendaController.php
-require_once '../models/agendamento.php';
+require_once '../models/Agendamento.php';
+
 // Puxamos o model que terá as regras de negocio
 class AgendaController {
     private $model;

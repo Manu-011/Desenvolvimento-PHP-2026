@@ -1,7 +1,7 @@
 <?php
-//config/database.php
+//config/Database.php
 
-class database {
+class Database {
     //variavel para armazenar a conexao
     private static $conexao = null;
     

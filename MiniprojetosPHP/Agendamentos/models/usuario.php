@@ -4,7 +4,7 @@
 //puxa a classe de conexão com o banco de dados
 require_once '../config/Database.php';
 
-class usuario {
+class Usuario {
     private $db;
 
     public function __construct() {
@@ -48,43 +48,18 @@ class usuario {
                 ':senha' => $senhaHash,
                 ':tipo' => $tipo
             ]);
-            return [sucesso => true, id => $this->db->lastInsertId()]; // Retorna true e o ID do usuário criado
+
+        return ["sucesso" => true, "id" => $this->db->lastInsertId()]; // Retorna true e o ID do usuário criado
+
         } catch (PDOException $e) {
             // Aqui você pode logar o erro ou lidar com ele de alguma forma
-            return [sucesso => false]; // Retorna false se ocorrer um erro
+            if($e->getCode() == 23000) { // Código de erro para violação de chave única (e-mail já existe)
+            return ["sucesso" => false, "mensagem" => "Este e-mail já está cadastrado."]; // Retorna false se ocorrer um erro
         }
-    
+       
+        }
+     return ["sucesso" => false, "mensagem" => "Ocorreu um erro ao criar o usuário."]; // Retorna false se ocorrer um erro
     }
-
-   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ?>
