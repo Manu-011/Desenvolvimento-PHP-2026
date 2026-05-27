@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
+</div> <p style="text-align: center; color: #777; font-size: 12px; margin-top: 20px;">
+        &copy; <?php echo date('Y'); ?> - Sistema de Agendamentos
+    </p>
 </body>
 </html>
