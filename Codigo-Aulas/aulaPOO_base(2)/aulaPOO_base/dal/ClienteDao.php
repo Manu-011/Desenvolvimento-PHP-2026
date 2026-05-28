@@ -1,0 +1,89 @@
+<?php
+namespace App\Dal;
+
+use App\Dal\Conn;
+use App\Model\Cliente;
+use Exception;
+use PDO;
+use PDOException;
+
+abstract class ClienteDao{
+    public static function cadastrar(Cliente $cliente) : int {
+        try {
+        $pdo = Conn::getConn();    
+        $sql = $pdo->prepare("INSERT INTO clientes (nome, sobrenome, ddd, telefone) VALUES (:nome, :sobrenome, :ddd, :telefone)");
+
+    $sql->bindValue(":nome", $cliente->getNome(), PDO::PARAM_STR);
+    $sql->bindValue(":sobrenome", $cliente->getSobrenome(), PDO::PARAM_STR);
+    $sql->bindValue(":ddd", $cliente->getDdd(), PDO::PARAM_INT);
+    $sql->bindValue(":telefone", $cliente->getTelefone(), PDO::PARAM_INT);
+    $sql->execute();
+
+    return (int) $pdo->lastInsertId();
+    } catch (PDOException $e) {
+        throw $e;
+    }
+    }
+
+    public static function listar(): array{
+        try{
+            $pdo = Conn::getConn();
+            $sql = $pdo->prepare("SELECT * FROM clientes");
+            $sql->execute();
+
+            $res = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+            $clientes = [];
+
+            foreach($res as $dados){
+                $clientes[] = Cliente::criar(
+                    $dados["id"],
+                    (int) $dados["ddd"],
+                    $dados["telefone"],
+                    $dados["nome"],
+                    $dados["sobrenome"],
+                );
+            }
+
+            return $clientes;
+
+        }catch(PDOException $e){
+            throw $e;
+        }
+    }
+
+    public static function buscarPorId(int $id) : ?Cliente {
+        try{
+            $pdo = Conn::getConn();
+            $sql = $pdo->prepare("SELECT * FROM clientes WHERE id=?");
+            $sql->execute([$id]);
+            $dados = $sql->fetch(PDO::FETCH_ASSOC);
+
+            if (!$dados) return null;
+
+            return Cliente::criar(
+               $dados["id"], 
+               $dados["ddd"], 
+               $dados["telefone"], 
+               $dados["nome"], 
+               $dados["sobrenome"], 
+            );
+        }catch(PDOException $e){
+            throw $e;
+        }
+    }
+
+    public static function excluir(int $id) : void {
+        try {
+            $pdo = Conn::getConn();
+            $sql = $pdo->prepare("DELETE FROM clientes WHERE id=?");
+            $sql->execute([$id]);
+
+            if ($sql->rowCount() !== 1) {
+                throw new Exception("Erro ao deletar Cliente");
+            }
+        } catch (PDOException $e) {
+            throw $e;
+        }
+    }
+}
